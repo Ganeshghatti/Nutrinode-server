@@ -13,7 +13,6 @@ const FormData = require("form-data");
 const { sendErrorEmail } = require("../utils/Errormail");
 const { v4: uuidv4 } = require("uuid");
 const { createCanvas, loadImage } = require('canvas');
-const sharp = require('sharp');
 
 const app = express();
 app.use(cors());
@@ -314,7 +313,7 @@ exports.DetectFood = async (req, res, next) => {
             content: [
               {
                 type: "text",
-                text: "Identify the object in this image.---If Given object is food then write 2-3 words for 1):name: and 2):description: of image. Then estimate the number of grams 3):protien: 4):fats: 5):carbs: 6):calories: in that food.protien,fats,carbs and calories should stricktly in number. If given object isn't food item then return :name:=not a food item and end. All the responses should be strictly in JSON format and the variable names should exactly match with params inside :: quotes.",
+                text: "Identify the object in this image.---If Given object is food then write 2-3 words for 1):name: and 2):description: of image. Then estimate the number of grams 3):protien: 4):fats: 5):carbs: 6):calories: in that food.protien,fats,carbs and calories should stricktly in number. If given object isn't food item then return :name:=not a food item and end. All the responses should be strictly in JSON format and the variable names should exactly match with params inside :: quotes.Output in parsable JSON Format ONLY",
               },
               {
                 type: "image_url",
@@ -333,6 +332,9 @@ exports.DetectFood = async (req, res, next) => {
         },
       }
     );
+    console.log(response.data.choices[0].message)
+    const items = JSON.parse(response.data.choices[0].message.content);
+    console.log(items)
     const { description, name, calories, fat, protein, carbs } =
       response.data.choices[0].message.content;
 
