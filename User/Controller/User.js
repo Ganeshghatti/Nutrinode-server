@@ -12,6 +12,8 @@ const moment = require("moment");
 const FormData = require("form-data");
 const { sendErrorEmail } = require("../utils/Errormail");
 const { v4: uuidv4 } = require("uuid");
+const { createCanvas, loadImage } = require('canvas');
+const sharp = require('sharp');
 
 const app = express();
 app.use(cors());
@@ -291,6 +293,16 @@ exports.DetectFood = async (req, res, next) => {
     if (!email || !link) {
       return res.status(400).json({ error: "Missing required data" });
     }
+    const image = await loadImage(link);
+    const canvas = createCanvas(image.width, image.height);
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(image, 0, 0);
+
+    // Convert the canvas to a data URL with JPEG format
+    const dataUrl = canvas.toDataURL('image/jpeg');
+
+    // Log the converted URL
+    console.log(dataUrl);
 
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
@@ -307,7 +319,7 @@ exports.DetectFood = async (req, res, next) => {
               {
                 type: "image_url",
                 image_url: {
-                  url: `data:image/jpeg;base64,${link}`,
+                  url: dataUrl,
                 },
               },
             ],
@@ -321,7 +333,6 @@ exports.DetectFood = async (req, res, next) => {
         },
       }
     );
-
     const { description, name, calories, fat, protein, carbs } =
       response.data.choices[0].message.content;
 
@@ -337,7 +348,7 @@ exports.DetectFood = async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.error("Error:", error.message);
+    console.error("Error:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
