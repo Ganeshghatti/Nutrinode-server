@@ -282,3 +282,62 @@ exports.Chat = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+exports.DetectFood = async (req, res, next) => {
+  try {
+    const { email, link } = req.body;
+
+    // Validate incoming request data
+    if (!email || !link) {
+      return res.status(400).json({ error: "Missing required data" });
+    }
+
+    const response = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        model: "gpt-4-turbo",
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: "Identify the object in this image.---If Given object is food then write 2-3 words for 1):name: and 2):description: of image. Then estimate the number of grams 3):protien: 4):fats: 5):carbs: 6):calories: in that food.protien,fats,carbs and calories should stricktly in number. If given object isn't food item then return :name:=not a food item and end. All the responses should be strictly in JSON format and the variable names should exactly match with params inside :: quotes.",
+              },
+              {
+                type: "image_url",
+                image_url: {
+                  url: `data:image/jpeg;base64,${link}`,
+                },
+              },
+            ],
+          },
+        ],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const { description, name, calories, fat, protein, carbs } =
+      response.data.choices[0].message.content;
+
+    // Return the processed data
+    res.status(200).json({
+      items: {
+        description: description || "Object couldn't be detected accurately",
+        name: name || "Unidentified object",
+        calories: calories || "0",
+        fat: fat || "0",
+        protein: protein || "0",
+        carbs: carbs || "0",
+      },
+    });
+  } catch (error) {
+    console.error("Error:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
