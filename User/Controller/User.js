@@ -343,7 +343,6 @@ exports.DetectFood = async (req, res, next) => {
     const { description, name, calories, fat, protein, carbs } =
       response.data.choices[0].message.content;
 
-    // Return the processed data
     res.status(200).json({
       items: {
         description: items.description || "Object couldn't be detected accurately",
