@@ -300,9 +300,6 @@ exports.DetectFood = async (req, res, next) => {
     // Convert the canvas to a data URL with JPEG format
     const dataUrl = canvas.toDataURL('image/jpeg');
 
-    // Log the converted URL
-    console.log(dataUrl);
-
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       {
@@ -332,16 +329,8 @@ exports.DetectFood = async (req, res, next) => {
         },
       }
     );
-    console.log(response.data.choices[0].message.content)
 
     const items = JSON.parse(response.data.choices[0].message.content);
-    console.log(items)
-
-
-
-
-    const { description, name, calories, fat, protein, carbs } =
-      response.data.choices[0].message.content;
 
     res.status(200).json({
       items: {
