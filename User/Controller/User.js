@@ -346,12 +346,12 @@ exports.DetectFood = async (req, res, next) => {
     // Return the processed data
     res.status(200).json({
       items: {
-        description: description || "Object couldn't be detected accurately",
-        name: name || "Unidentified object",
-        calories: calories || "0",
-        fat: fat || "0",
-        protein: protein || "0",
-        carbs: carbs || "0",
+        description: items.description || "Object couldn't be detected accurately",
+        name: items.name || "Unidentified object",
+        calories: items.calories || "0",
+        fat: items.fat || "0",
+        protein: items.protein || "0",
+        carbs: items.carbs || "0",
       },
     });
   } catch (error) {
