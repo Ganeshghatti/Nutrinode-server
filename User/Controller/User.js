@@ -313,7 +313,7 @@ exports.DetectFood = async (req, res, next) => {
             content: [
               {
                 type: "text",
-                text: "Identify the object in this image.---If Given object is food then write 2-3 words for 1):name: and 2):description: of image. Then estimate the number of grams 3):protien: 4):fats: 5):carbs: 6):calories: in that food.protien,fats,carbs and calories should strictly in number. If given object isn't food item then return :name:=not a food item and end. All the responses should be strictly in JSON format and the variable names should exactly match with params inside :: quotes. Output should be strictly in parsable JSON Format ONLY (your output should be in such a way that when applied JSON.parse() to your string output it should return JSON)",
+                text: "Identify the object in this image.---If Given object is food then write 2-3 words for 1):name: and 2):description: of image. Then estimate the number of grams 3):protien: 4):fats: 5):carbs: 6):calories: in that food.protien,fats,carbs and calories should strictly in number. If given object isn't food item then return :name:=not a food item and end. All the responses should be strictly in JSON format and the variable names should exactly match with params inside :: quotes. Output should be strictly in parsable JSON Format ONLY without unwanted symbols and back ticks(your output should be in such a way that when applied JSON.parse() to your string output it should return JSON)",
               },
               {
                 type: "image_url",
@@ -332,9 +332,14 @@ exports.DetectFood = async (req, res, next) => {
         },
       }
     );
-    console.log(response.data.choices[0].message)
+    console.log(response.data.choices[0].message.content)
+
     const items = JSON.parse(response.data.choices[0].message.content);
     console.log(items)
+
+
+
+
     const { description, name, calories, fat, protein, carbs } =
       response.data.choices[0].message.content;
 
