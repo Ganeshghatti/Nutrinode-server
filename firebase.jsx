@@ -1,6 +1,5 @@
 import Spinner from "react-native-loading-spinner-overlay";
-
-  const [loading,setLoading]=useState(false);
+const [loading,setLoading]=useState(false);
 
   try{
     setLoading(true);

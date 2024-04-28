@@ -237,7 +237,6 @@ exports.AddToDiet = async (req, res, next) => {
 
 exports.GetDiet = async (req, res, next) => {
   try {
-    console.log(req.user);
     const user = await userModel.findOne({ email: req.user.email });
 
     if (!user) {
@@ -252,7 +251,6 @@ exports.GetDiet = async (req, res, next) => {
 
 exports.Chat = async (req, res, next) => {
   const { email, msg } = req.body;
-  console.log(process.env.API_KEY, msg);
   try {
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
